@@ -69,7 +69,12 @@ server <- function(input, output) {
       writeLines(analysis_content, r_script)
       
       # Create zip file with both files
-      zip(file, files = c(csv_file, r_script), flags = "-j")
+      zip_result <- zip(file, files = c(csv_file, r_script), flags = "-j")
+      
+      # Check if zip was successful
+      if (zip_result != 0) {
+        stop("Failed to create zip file")
+      }
     }
   )
   
