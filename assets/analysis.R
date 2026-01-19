@@ -2,8 +2,7 @@
 # This script analyzes the data generated for the PSYC2001 assignment
 
 # Load the data
-# Replace 'your_data.csv' with your actual CSV filename
-data <- read.csv("your_data.csv")
+data <- read.csv("data.csv")
 
 # 1. Remove any missing values
 data <- na.omit(data)

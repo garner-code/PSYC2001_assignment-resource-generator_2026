@@ -57,16 +57,14 @@ server <- function(input, output) {
       temp_dir <- tempdir()
       
       # Define file paths
-      csv_file <- file.path(temp_dir, paste(input$zID, ".csv", sep = ""))
+      csv_file <- file.path(temp_dir, "data.csv")
       r_script <- file.path(temp_dir, "analysis.R")
       
       # Write the CSV file
       write.csv(dat(), csv_file, row.names = FALSE)
       
-      # Copy the analysis R script and update the filename reference
-      analysis_content <- readLines("assets/analysis.R")
-      analysis_content <- gsub("your_data.csv", paste(input$zID, ".csv", sep = ""), analysis_content)
-      writeLines(analysis_content, r_script)
+      # Copy the analysis R script to temp directory
+      file.copy("assets/analysis.R", r_script)
       
       # Create zip file with both files
       zip_result <- zip(file, files = c(csv_file, r_script), flags = "-j")
