@@ -32,7 +32,17 @@ t_test_result <- t.test(dat$v1, dat$v2, paired = TRUE)
 print("Paired t-test results:")
 print(t_test_result)
 
-# 4. Perform a correlation analysis on the observations from c (v1) and d (v2)
+# 4. Perform a between-subjects t-test for v1 comparing Group 1 and Group 2
+t_test_v1_between <- t.test(v1 ~ group, data = dat) # conducts an independent samples t-test to see if v1 differs by group
+print("Between-subjects t-test results for v1:")
+print(t_test_v1_between)
+
+# 5. Perform a between-subjects t-test for v2 comparing Group 1 and Group 2
+t_test_v2_between <- t.test(v2 ~ group, data = dat) # conducts an independent samples t-test to see if v2 differs by group
+print("Between-subjects t-test results for v2:")
+print(t_test_v2_between)
+
+# 6. Perform a correlation analysis on the observations from c (v1) and d (v2)
 correlation_result <- cor.test(dat$v1, dat$v2)
 print("Correlation analysis results:")
 print(correlation_result)
