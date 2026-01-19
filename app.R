@@ -47,13 +47,29 @@ server <- function(input, output) {
     dat()
   })
   
-  # Downloadable csv of selected dataset ----
+  # Downloadable zip file containing csv and R script ----
   output$downloadData <- downloadHandler(
     filename = function() {
-      paste(input$zID, ".csv", sep = "")
+      paste(input$zID, ".zip", sep = "")
     },
     content = function(file) {
-      write.csv(dat(), file, row.names = FALSE)
+      # Create a temporary directory to store files before zipping
+      temp_dir <- tempdir()
+      
+      # Define file paths
+      csv_file <- file.path(temp_dir, paste(input$zID, ".csv", sep = ""))
+      r_script <- file.path(temp_dir, "analysis.R")
+      
+      # Write the CSV file
+      write.csv(dat(), csv_file, row.names = FALSE)
+      
+      # Copy the analysis R script and update the filename reference
+      analysis_content <- readLines("assets/analysis.R")
+      analysis_content <- gsub("your_data.csv", paste(input$zID, ".csv", sep = ""), analysis_content)
+      writeLines(analysis_content, r_script)
+      
+      # Create zip file with both files
+      zip(file, files = c(csv_file, r_script), flags = "-j")
     }
   )
   
