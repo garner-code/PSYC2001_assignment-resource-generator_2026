@@ -75,7 +75,7 @@ dat %>%
   ggplot(aes(x = group, y = v2, fill = group)) +
   geom_boxplot() +
   labs(x = "Group", y = "v2 values") +
-  scale_fill_manual(values = c("Group 1" = "lightgreen", "Group 2" = "lightyellow")) +
+  scale_fill_manual(values = c("Group 1" = "lightgreen", "Group 2" = "lightpink")) +
   theme_classic()
 
 ###############################################################################
