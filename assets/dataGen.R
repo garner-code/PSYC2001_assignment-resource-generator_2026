@@ -9,7 +9,7 @@ dataGen <- function(zID) {
   subN <- 80
   N_mult <- 1 # will run the data generation process and
   # then concatenate this number of times, to get 
-  # a datafile of 80 subjects
+  # a datafile of 80 rows (40 subjects per group)
   ##### make the continuous regressors
   v1_mu <- 0.5
   v1_sd <- 0.5
