@@ -21,7 +21,8 @@ This document details the changes made to add README.txt to the download and cre
 - Created a base directory (`zip_base`) with subdirectories: `Data/` and `Output/`
 - Changed file path for `data.csv` to be written to `Data/data.csv`
 - Added `README.txt` to the root of the zip file
-- Added a `.gitkeep` placeholder file in the `Output/` folder to ensure it's included
+- ~~Added a `.gitkeep` placeholder file in the `Output/` folder to ensure it's included~~ (REMOVED 2026-01-20)
+- Added `include.dirs = TRUE` parameter to `list.files()` to include empty directories (2026-01-20)
 - Changed zip creation method from using `-j` flag (which junks paths) to `-r` flag (recursive) to preserve folder structure
 - Used `setwd()` to change to the zip_base directory before zipping to ensure correct relative paths
 
@@ -43,25 +44,36 @@ When a student downloads their data, the zip file will have this structure:
 ├── analysis.R                      (Analysis script)
 ├── Data/
 │   └── data.csv                   (Student's personalized dataset)
-└── Output/
-    └── .gitkeep                   (Placeholder to ensure folder is included)
+└── Output/                         (Empty folder for student outputs)
 ```
 
 ## Errors Encountered and Workarounds
 
-### Error 1: Empty Folders Not Included in Zip Files
+### Error 1: Empty Folders Not Included in Zip Files (RESOLVED)
 
 **Problem**: 
-By default, R's `zip()` function and most zip utilities do not include empty directories in the archive. This would mean the `Output/` folder would not be included in the download if left empty.
+By default, R's `zip()` function does not include empty directories in the archive when using `list.files()` without the `include.dirs` parameter. This would mean the `Output/` folder would not be included in the download if left empty.
 
-**Solution**: 
-Added a `.gitkeep` placeholder file in the `Output/` folder. This is a common convention used in version control systems to track empty directories. The file has no functional purpose other than ensuring the directory exists in the zip file.
+**Original Solution (DEPRECATED)**: 
+Initially, a `.gitkeep` placeholder file was added to the `Output/` folder to ensure it was included in the zip. While this worked, it resulted in students receiving a hidden file that served no purpose for their work.
 
-**Code**:
+**Current Solution (2026-01-20)**: 
+Removed the `.gitkeep` file and instead added `include.dirs = TRUE` parameter to the `list.files()` call. This makes the function return both files and directory names, ensuring empty directories are properly included in the zip archive.
+
+**Code (Current)**:
 ```r
-output_placeholder <- file.path(output_dir, ".gitkeep")
-file.create(output_placeholder)
+# Create zip file with the directory structure
+current_wd <- getwd()
+setwd(zip_base)
+zip_result <- zip(file, files = list.files(".", recursive = TRUE, include.dirs = TRUE), flags = "-r")
+setwd(current_wd)
 ```
+
+**Benefits of Current Approach**:
+- Students receive a clean, empty Output folder
+- No hidden files that could cause confusion
+- Simpler, more elegant solution using R's built-in functionality
+- Maintains the same directory structure
 
 ### Error 2: Preserving Directory Structure in Zip Files
 
@@ -78,7 +90,7 @@ The original code used `zip(file, files = c(...), flags = "-j")`. The `-j` flag 
 ```r
 current_wd <- getwd()
 setwd(zip_base)
-zip_result <- zip(file, files = list.files(".", recursive = TRUE), flags = "-r")
+zip_result <- zip(file, files = list.files(".", recursive = TRUE, include.dirs = TRUE), flags = "-r")
 setwd(current_wd)
 ```
 
@@ -126,7 +138,7 @@ Since R is not available in the development environment, manual testing should b
 
 ## Potential Edge Cases
 
-1. **Student removes .gitkeep file**: No issue - the Output/ folder will still exist after extraction
+1. **Student modifies folder structure**: If students rename or move folders, the `here()` package should still find the project root via the .Rproj file.
 2. **Student doesn't use RStudio**: If they open analysis.R in base R, `here()` might not work as expected. Recommend students always open the .Rproj file first.
 3. **Different operating systems**: The `file.path()` function handles path separators correctly across Windows, Mac, and Linux.
 
