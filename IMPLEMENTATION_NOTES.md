@@ -128,7 +128,7 @@ Since R is not available in the development environment, manual testing should b
      - PSYC2001_Assignment.Rproj in root
      - analysis.R in root
      - Data/ folder with data.csv inside
-     - Output/ folder (empty except for .gitkeep)
+     - Output/ folder (completely empty, no .gitkeep file)
 4. **Test the analysis script**:
    - Open the extracted folder in RStudio (double-click the .Rproj file)
    - Ensure required packages are installed: `install.packages(c("here", "tidyverse"))`
