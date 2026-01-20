@@ -47,7 +47,7 @@ server <- function(input, output) {
     dat()
   })
   
-  # Downloadable zip file containing csv, R script, and R project file ----
+  # Downloadable zip file containing csv, R script, R project file, README, and folders ----
   output$downloadData <- downloadHandler(
     filename = function() {
       paste(input$zID, ".zip", sep = "")
@@ -55,23 +55,45 @@ server <- function(input, output) {
     content = function(file) {
       # Create a temporary directory to store files before zipping
       temp_dir <- tempdir()
+      zip_base <- file.path(temp_dir, paste0("zip_", input$zID))
+      
+      # Create the directory structure
+      dir.create(zip_base, showWarnings = FALSE, recursive = TRUE)
+      data_dir <- file.path(zip_base, "Data")
+      output_dir <- file.path(zip_base, "Output")
+      dir.create(data_dir, showWarnings = FALSE)
+      dir.create(output_dir, showWarnings = FALSE)
       
       # Define file paths
-      csv_file <- file.path(temp_dir, "data.csv")
-      r_script <- file.path(temp_dir, "analysis.R")
-      r_project <- file.path(temp_dir, "PSYC2001_Assignment.Rproj")
+      csv_file <- file.path(data_dir, "data.csv")
+      r_script <- file.path(zip_base, "analysis.R")
+      r_project <- file.path(zip_base, "PSYC2001_Assignment.Rproj")
+      readme_file <- file.path(zip_base, "README.txt")
       
-      # Write the CSV file
+      # Write the CSV file to Data folder
       write.csv(dat(), csv_file, row.names = FALSE)
       
-      # Copy the analysis R script to temp directory
+      # Copy the analysis R script to base directory
       file.copy("assets/analysis.R", r_script)
       
-      # Copy the R project file to temp directory
+      # Copy the R project file to base directory
       file.copy("assets/PSYC2001_Assignment.Rproj", r_project)
       
-      # Create zip file with all three files
-      zip_result <- zip(file, files = c(csv_file, r_script, r_project), flags = "-j")
+      # Copy the README file to base directory
+      file.copy("assets/README.txt", readme_file)
+      
+      # Create a placeholder file in Output folder to ensure it's included in zip
+      output_placeholder <- file.path(output_dir, ".gitkeep")
+      file.create(output_placeholder)
+      
+      # Get all files and folders to zip
+      files_to_zip <- list.files(zip_base, full.names = TRUE, recursive = TRUE, include.dirs = FALSE)
+      
+      # Create zip file with the directory structure
+      current_wd <- getwd()
+      setwd(zip_base)
+      zip_result <- zip(file, files = list.files(".", recursive = TRUE), flags = "-r")
+      setwd(current_wd)
       
       # Check if zip was successful
       if (zip_result != 0) {
