@@ -22,6 +22,8 @@ You must also add comments to the code you copy and paste over that explains wha
 
 The code you need to perform your chosen analysis includes all the steps you would take - e.g. loading and visualising the data as well as the code for the specific analysis that you have chosen.
 
+Note that good answers will copy only the required code to perform the steps of the analysis that has been chosen. Excellent answers will show cogent commenting of the code and will customise visualisations.
+
 ##################################################
 # Other things to know about the data
 
