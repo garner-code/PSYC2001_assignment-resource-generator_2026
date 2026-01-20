@@ -52,7 +52,7 @@ correlation_result <- cor.test(dat$v1, dat$v2)
 correlation_result
 
 ###############################################################################
-# Create boxplot showing both v1 and v2 on x-axis
+# 
 dat %>%
   pivot_longer(cols = c(v1, v2), names_to = "variable", values_to = "value") %>%
   ggplot(aes(x = variable, y = value)) +
@@ -61,7 +61,7 @@ dat %>%
   theme_classic()
 
 ###############################################################################
-# Create boxplot of v1 by group
+# 
 dat %>%
   ggplot(aes(x = group, y = v1, fill = group)) +
   geom_boxplot() +
@@ -70,7 +70,7 @@ dat %>%
   theme_classic()
 
 ###############################################################################
-# Create boxplot of v2 by group
+# 
 dat %>%
   ggplot(aes(x = group, y = v2, fill = group)) +
   geom_boxplot() +
@@ -79,7 +79,7 @@ dat %>%
   theme_classic()
 
 ###############################################################################
-# Create scatterplot between v1 and v2
+# 
 dat %>%
   ggplot(aes(x = v1, y = v2)) +
   geom_point(colour = "orange") +
