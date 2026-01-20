@@ -86,9 +86,6 @@ server <- function(input, output) {
       output_placeholder <- file.path(output_dir, ".gitkeep")
       file.create(output_placeholder)
       
-      # Get all files and folders to zip
-      files_to_zip <- list.files(zip_base, full.names = TRUE, recursive = TRUE, include.dirs = FALSE)
-      
       # Create zip file with the directory structure
       current_wd <- getwd()
       setwd(zip_base)
