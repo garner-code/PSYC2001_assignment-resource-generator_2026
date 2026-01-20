@@ -33,24 +33,22 @@ dat %>%
 
 ###############################################################################
 # 
-t_test_result <- t.test(dat$v1, dat$v2, paired = TRUE)
-print("Paired t-test results:")
-print(t_test_result)
+paired_t_test_result <- t.test(dat$v1, dat$v2, paired = TRUE)
+paired_t_test_result
 
 ###############################################################################
 # 
 t_test_v1_between <- t.test(v1 ~ group, data = dat)
-print("Between-subjects t-test results for v1:")
-print(t_test_v1_between)
+t_test_v1_between
 
 ###############################################################################
 # 
 t_test_v2_between <- t.test(v2 ~ group, data = dat)
-print("Between-subjects t-test results for v2:")
-print(t_test_v2_between)
+t_test_v2_between
 
 ###############################################################################
 # 
 correlation_result <- cor.test(dat$v1, dat$v2)
-print("Correlation analysis results:")
-print(correlation_result)
+correlation_result
+
+
