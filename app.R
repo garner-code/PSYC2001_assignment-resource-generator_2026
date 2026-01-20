@@ -82,14 +82,10 @@ server <- function(input, output) {
       # Copy the README file to base directory
       file.copy("assets/README.txt", readme_file)
       
-      # Create a placeholder file in Output folder to ensure it's included in zip
-      output_placeholder <- file.path(output_dir, ".gitkeep")
-      file.create(output_placeholder)
-      
       # Create zip file with the directory structure
       current_wd <- getwd()
       setwd(zip_base)
-      zip_result <- zip(file, files = list.files(".", recursive = TRUE), flags = "-r")
+      zip_result <- zip(file, files = list.files(".", recursive = TRUE, include.dirs = TRUE), flags = "-r")
       setwd(current_wd)
       
       # Check if zip was successful

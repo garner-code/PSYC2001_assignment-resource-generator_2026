@@ -1,5 +1,63 @@
 # Changes to PSYC2001 Assignment Resource Generator
 
+## 2026-01-20: Remove .gitkeep from Output Folder
+
+### Summary
+Removed the `.gitkeep` placeholder file from the Output folder in student downloads. Students no longer receive this hidden file in their empty Output folder.
+
+### Modified Files
+- `app.R`: Removed code that creates `.gitkeep` file in Output folder (lines 85-87)
+- `app.R`: Added `include.dirs = TRUE` parameter to `list.files()` call to ensure empty directories are included in zip
+
+### Impact
+- Students receive a clean, empty Output folder without any placeholder files
+- The Output folder is still properly included in the zip download
+- No change to folder structure or other files
+
+### Technical Details
+
+**Before:**
+```r
+# Create a placeholder file in Output folder to ensure it's included in zip
+output_placeholder <- file.path(output_dir, ".gitkeep")
+file.create(output_placeholder)
+
+# Create zip file with the directory structure
+current_wd <- getwd()
+setwd(zip_base)
+zip_result <- zip(file, files = list.files(".", recursive = TRUE), flags = "-r")
+setwd(current_wd)
+```
+
+**After:**
+```r
+# Create zip file with the directory structure
+current_wd <- getwd()
+setwd(zip_base)
+zip_result <- zip(file, files = list.files(".", recursive = TRUE, include.dirs = TRUE), flags = "-r")
+setwd(current_wd)
+```
+
+### Problem & Solution
+
+**Problem:** 
+The original implementation used a `.gitkeep` file as a placeholder to ensure the empty Output folder was included in the zip file. While this is a common practice in version control, it's unnecessary for student downloads and could be confusing.
+
+**Solution:**
+By adding `include.dirs = TRUE` to the `list.files()` function call, R's zip function will include empty directories in the archive without needing placeholder files. This parameter makes `list.files()` return directory names along with file names, ensuring they're added to the zip.
+
+### Testing
+
+Created comprehensive test scripts to verify:
+1. ✅ Output folder is included in the zip file
+2. ✅ Output folder does not contain `.gitkeep` file
+3. ✅ All other files and folders remain intact (Data/, analysis.R, README.txt, etc.)
+4. ✅ Directory structure is preserved correctly
+
+Test results confirmed all requirements are met.
+
+---
+
 ## 2026-01-20: Reduce Dataset to 80 Rows
 
 ### Summary
