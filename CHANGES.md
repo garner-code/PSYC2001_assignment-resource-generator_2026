@@ -1,6 +1,42 @@
-# Changes to analysis.R - Tidyverse Implementation
+# Changes to PSYC2001 Assignment Resource Generator
 
-## Summary of Changes
+## 2026-01-20: Reduce Dataset to 80 Rows
+
+### Summary
+Modified the data generation function to produce datasets with exactly 80 rows instead of 300 rows.
+
+### Modified Files
+- `assets/dataGen.R`: Updated `subN` parameter from 100 to 80, and `N_mult` from 3 to 1
+
+### Impact
+- Each generated `data.csv` file will now contain exactly 80 rows (previously 300 rows)
+- Each group (Group 1 and Group 2) will have 40 subjects each
+- The data structure remains the same: subID, group, v1, v2
+- All analysis scripts remain compatible
+- No changes needed to the Shiny app interface
+
+### Technical Details
+**Before:**
+```r
+n_grps <- 2
+subN <- 100
+N_mult <- 3
+# Result: 300 rows
+```
+
+**After:**
+```r
+n_grps <- 2
+subN <- 80
+N_mult <- 1
+# Result: 80 rows
+```
+
+---
+
+## Previous Changes: analysis.R - Tidyverse Implementation
+
+### Summary of Changes
 
 This document details the changes made to `assets/analysis.R` to use tidyverse functionality as requested.
 
