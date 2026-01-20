@@ -6,10 +6,10 @@ dataGen <- function(zID) {
   set.seed(zID)
   
   n_grps <- 2
-  subN <- 100
-  N_mult <- 3 # will run the data generation process and
+  subN <- 80
+  N_mult <- 1 # will run the data generation process and
   # then concatenate this number of times, to get 
-  # a datafile of 1000 subjects
+  # a datafile of 80 subjects
   ##### make the continuous regressors
   v1_mu <- 0.5
   v1_sd <- 0.5
