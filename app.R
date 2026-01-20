@@ -47,7 +47,7 @@ server <- function(input, output) {
     dat()
   })
   
-  # Downloadable zip file containing csv and R script ----
+  # Downloadable zip file containing csv, R script, and R project file ----
   output$downloadData <- downloadHandler(
     filename = function() {
       paste(input$zID, ".zip", sep = "")
@@ -59,6 +59,7 @@ server <- function(input, output) {
       # Define file paths
       csv_file <- file.path(temp_dir, "data.csv")
       r_script <- file.path(temp_dir, "analysis.R")
+      r_project <- file.path(temp_dir, "PSYC2001_Assignment.Rproj")
       
       # Write the CSV file
       write.csv(dat(), csv_file, row.names = FALSE)
@@ -66,8 +67,11 @@ server <- function(input, output) {
       # Copy the analysis R script to temp directory
       file.copy("assets/analysis.R", r_script)
       
-      # Create zip file with both files
-      zip_result <- zip(file, files = c(csv_file, r_script), flags = "-j")
+      # Copy the R project file to temp directory
+      file.copy("assets/PSYC2001_Assignment.Rproj", r_project)
+      
+      # Create zip file with all three files
+      zip_result <- zip(file, files = c(csv_file, r_script, r_project), flags = "-j")
       
       # Check if zip was successful
       if (zip_result != 0) {
