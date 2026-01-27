@@ -74,18 +74,24 @@ server <- function(input, output) {
       write.csv(dat(), csv_file, row.names = FALSE)
       
       # Copy the analysis R script to base directory
-      file.copy("assets/analysis.R", r_script)
+      if (!file.copy("assets/analysis.R", r_script)) {
+        stop("Failed to copy analysis.R")
+      }
       
       # Copy the R project file to base directory
-      file.copy("assets/PSYC2001_Assignment.Rproj", r_project)
+      if (!file.copy("assets/PSYC2001_Assignment.Rproj", r_project)) {
+        stop("Failed to copy PSYC2001_Assignment.Rproj")
+      }
       
       # Copy the README file to base directory
-      file.copy("assets/README.txt", readme_file)
+      if (!file.copy("assets/README.txt", readme_file)) {
+        stop("Failed to copy README.txt")
+      }
       
       # Create zip file with the directory structure
       current_wd <- getwd()
       setwd(zip_base)
-      zip_result <- zip(file, files = list.files(".", recursive = TRUE, include.dirs = TRUE), flags = "-r")
+      zip_result <- zip(file, files = list.files(".", recursive = TRUE, include.dirs = TRUE, all.files = TRUE), flags = "-r")
       setwd(current_wd)
       
       # Check if zip was successful
