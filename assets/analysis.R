@@ -44,11 +44,6 @@ t_test_v1_between
 
 ###############################################################################
 # 
-t_test_v2_between <- t.test(v2 ~ group, data = dat)
-t_test_v2_between
-
-###############################################################################
-# 
 correlation_result <- cor.test(dat$v1, dat$v2)
 correlation_result
 
