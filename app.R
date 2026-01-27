@@ -113,15 +113,21 @@ server <- function(input, output) {
         stop("Failed to copy README.txt")
       }
       
-      # 5) Zip the directory contents into `file`
+      # 5) Add a README to Output folder to ensure it's included in the zip
+      output_readme <- file.path(output_dir, "README.txt")
+      writeLines("This folder is for your analysis outputs (plots, tables, etc.)", output_readme)
+      
+      # 6) Zip the directory contents into `file`
       # Use zip::zipr for portability (works on Windows/macOS/Linux)
       old_wd <- setwd(build_dir)
       on.exit(setwd(old_wd), add = TRUE)
       
       # Zip everything inside build_dir (relative paths)
+      # Note: include.dirs = FALSE to avoid listing files twice
+      # (zip::zipr handles directories automatically when given file paths)
       zip::zipr(
         zipfile = file,
-        files   = list.files(".", all.files = TRUE, recursive = TRUE, include.dirs = TRUE)
+        files   = list.files(".", all.files = TRUE, recursive = TRUE, include.dirs = FALSE)
       )
     }
   )
