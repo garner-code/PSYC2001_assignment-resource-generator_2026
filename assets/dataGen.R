@@ -6,14 +6,14 @@ dataGen <- function(zID) {
   set.seed(zID)
   
   n_grps <- 2
-  subN <- 80
+  subN <- 100
   N_mult <- 1 # will run the data generation process and
   # then concatenate this number of times, to get 
-  # a datafile of 80 rows (40 subjects per group)
+  # a datafile of 100 rows (50 subjects per group)
   ##### make the continuous regressors
   v1_mu <- 0.5
   v1_sd <- 0.5
-  g1_v1 <- rnorm(subN/2, v1_mu, v1_sd) # a basis for group 1
+  g1_v1 <- rnorm(subN/n_grps, v1_mu, v1_sd) # a basis for group 1
   # scale v1 to be between 0 and 1
   library(scales)
   g1_v1 <- scales::rescale(g1_v1, to=c(0.2,0.9))
@@ -30,7 +30,7 @@ dataGen <- function(zID) {
 
   # now make a second variable that has a negative correlation
   # with the first
-  v2 <- (v1 - 0.05) + rnorm(subN, mean=0, sd=v1_sd*2)
+  v2 <- (v1 - 0.15) + rnorm(subN, mean=0, sd=v1_sd*2)
   v2 <- scales::rescale(v2, to=c(0.1,0.9))
   
   total_v1_noise <- rnorm(subN*N_mult, 0, 0.01) # get a tiny bit of noise

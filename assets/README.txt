@@ -13,7 +13,7 @@ On the basis of your new experimental hypothesis, make up your own labels for th
 ##################################################
 # Your analysis task
 
-Also in the folder is a script called 'all_analysis.R'.
+Also in the folder is a script called 'analysis.R'.
 
 The script contains all the code required to load the data, perform visualisations, run a paired sample t-test between v1 and v2, run a between groups t-test for v1, as well as a correlation analysis between v1 and v2.
 
@@ -24,11 +24,13 @@ You must also add comments to the code you copy and paste over that explains wha
 
 The code you need to perform your chosen analysis includes all the steps you would take - e.g. loading and visualising the data as well as the code for the specific analysis that you have chosen and the specific graph that relates to the result.
 
-Note that good answers will copy only the required code to perform the steps of the analysis that has been chosen. Excellent answers will show cogent commenting of the code and will customise visualisations.
+Note that good answers will copy *only* the required code to perform the steps of the analysis that has been chosen. Excellent answers will show cogent commenting of the code and will customise visualisations to have the correct information (e.g. axis labels).
+
+You should save your figures that you generate, including the one that you put in your report, in the Output folder.
 
 You may relabel the columns in your data frame so that they better match your proposed variables, if you like. However, this is not necessary to complete the assignment.
 
 ##################################################
 # Other things to know about the data
 
-The continuous variables have been normalised between 0 and 1, so they lend themselves to being DVs of a range of common psychological measurement - e.g. RT, accuracy, % on a scale of measurement. However, if your own experimental design does not readily match a value between 0 and 1, you can just state that your variables were scaled between 0 and 1. This will not affect your marks. 
+The continuous variables have been scaled between 0 and 1, so they lend themselves to being DVs of a range of common psychological measurement - e.g. RT, accuracy, % on a scale of measurement. However, if your own experimental design does not readily match a value between 0 and 1, you can just state that your variables were scaled between 0 and 1 for analysis. This will not affect your marks. 
