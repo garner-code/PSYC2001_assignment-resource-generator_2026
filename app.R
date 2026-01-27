@@ -1,5 +1,35 @@
 library(shiny)
+library(zip)   # for cross-platform zipping
 source("assets/dataGen.R")
+
+# Helper: write an .Rproj file with sensible defaults
+write_rproj <- function(path, project_name = NULL, overwrite = FALSE) {
+  dir.create(path, recursive = TRUE, showWarnings = FALSE)
+  if (is.null(project_name)) project_name <- basename(normalizePath(path, mustWork = FALSE))
+  rproj_path <- file.path(path, paste0(project_name, ".Rproj"))
+  
+  if (file.exists(rproj_path) && !overwrite) {
+    stop("Rproj already exists at: ", rproj_path)
+  }
+  
+  rproj_contents <- c(
+    "Version: 1.0",
+    "",
+    "RestoreWorkspace: No",
+    "SaveWorkspace: No",
+    "AlwaysSaveHistory: No",
+    "",
+    "EnableCodeIndexing: Yes",
+    "UseSpacesForTab: Yes",
+    "NumSpacesForTab: 2",
+    "Encoding: UTF-8",
+    "",
+    "RnwWeave: knitr",
+    "LaTeX: pdfLaTeX"
+  )
+  writeLines(rproj_contents, rproj_path, useBytes = TRUE)
+  rproj_path
+}
 
 # Define UI for data download app ----
 ui <- fluidPage(
@@ -54,50 +84,44 @@ server <- function(input, output) {
     },
     content = function(file) {
       # Create a temporary directory to store files before zipping
-      temp_dir <- tempdir()
-      zip_base <- file.path(temp_dir, paste0("zip_", input$zID))
+      build_dir <- tempfile("bundle_")
+      dir.create(build_dir)
       
       # Create the directory structure
-      dir.create(zip_base, showWarnings = FALSE, recursive = TRUE)
-      data_dir <- file.path(zip_base, "Data")
-      output_dir <- file.path(zip_base, "Output")
+      data_dir <- file.path(build_dir, "Data")
+      output_dir <- file.path(build_dir, "Output")
       dir.create(data_dir, showWarnings = FALSE)
       dir.create(output_dir, showWarnings = FALSE)
       
-      # Define file paths
-      csv_file <- file.path(data_dir, "data.csv")
-      r_script <- file.path(zip_base, "analysis.R")
-      r_project <- file.path(zip_base, "PSYC2001_Assignment.Rproj")
-      readme_file <- file.path(zip_base, "README.txt")
+      # 1) Write the .Rproj file using the helper function
+      write_rproj(build_dir, project_name = "PSYC2001_Assignment")
       
-      # Write the CSV file to Data folder
+      # 2) Write the CSV file to Data folder
+      csv_file <- file.path(data_dir, "data.csv")
       write.csv(dat(), csv_file, row.names = FALSE)
       
-      # Copy the analysis R script to base directory
+      # 3) Copy the analysis R script to base directory
+      r_script <- file.path(build_dir, "analysis.R")
       if (!file.copy("assets/analysis.R", r_script)) {
         stop("Failed to copy analysis.R")
       }
       
-      # Copy the R project file to base directory
-      if (!file.copy("assets/PSYC2001_Assignment.Rproj", r_project)) {
-        stop("Failed to copy PSYC2001_Assignment.Rproj")
-      }
-      
-      # Copy the README file to base directory
+      # 4) Copy the README file to base directory
+      readme_file <- file.path(build_dir, "README.txt")
       if (!file.copy("assets/README.txt", readme_file)) {
         stop("Failed to copy README.txt")
       }
       
-      # Create zip file with the directory structure
-      current_wd <- getwd()
-      setwd(zip_base)
-      zip_result <- zip(file, files = list.files(".", recursive = TRUE, include.dirs = TRUE, all.files = TRUE), flags = "-r")
-      setwd(current_wd)
+      # 5) Zip the directory contents into `file`
+      # Use zip::zipr for portability (works on Windows/macOS/Linux)
+      old_wd <- setwd(build_dir)
+      on.exit(setwd(old_wd), add = TRUE)
       
-      # Check if zip was successful
-      if (zip_result != 0) {
-        stop("Failed to create zip file")
-      }
+      # Zip everything inside build_dir (relative paths)
+      zip::zipr(
+        zipfile = file,
+        files   = list.files(".", all.files = TRUE, recursive = TRUE, include.dirs = TRUE)
+      )
     }
   )
   

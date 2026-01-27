@@ -1,5 +1,159 @@
 # Changes to PSYC2001 Assignment Resource Generator
 
+## 2026-01-27: Dynamic .Rproj File Generation
+
+### Summary
+Implemented dynamic `.Rproj` file generation using a `write_rproj()` helper function instead of copying a static file from the assets directory. This approach follows best practices from the example code provided in the issue and improves maintainability.
+
+### Modified Files
+- `app.R`: Added `write_rproj()` helper function and updated download handler
+- `app.R`: Added `library(zip)` for cross-platform zip file creation
+- `app.R`: Replaced `zip()` with `zip::zipr()` for better portability
+
+### Changes to app.R
+
+#### 1. Added write_rproj() Helper Function (Lines 5-32)
+```r
+write_rproj <- function(path, project_name = NULL, overwrite = FALSE) {
+  dir.create(path, recursive = TRUE, showWarnings = FALSE)
+  if (is.null(project_name)) project_name <- basename(normalizePath(path, mustWork = FALSE))
+  rproj_path <- file.path(path, paste0(project_name, ".Rproj"))
+  
+  if (file.exists(rproj_path) && !overwrite) {
+    stop("Rproj already exists at: ", rproj_path)
+  }
+  
+  rproj_contents <- c(
+    "Version: 1.0",
+    "",
+    "RestoreWorkspace: No",
+    "SaveWorkspace: No",
+    "AlwaysSaveHistory: No",
+    "",
+    "EnableCodeIndexing: Yes",
+    "UseSpacesForTab: Yes",
+    "NumSpacesForTab: 2",
+    "Encoding: UTF-8",
+    "",
+    "RnwWeave: knitr",
+    "LaTeX: pdfLaTeX"
+  )
+  writeLines(rproj_contents, rproj_path, useBytes = TRUE)
+  rproj_path
+}
+```
+
+#### 2. Updated Download Handler
+**Before:**
+```r
+# Copy the R project file to base directory
+if (!file.copy("assets/PSYC2001_Assignment.Rproj", r_project)) {
+  stop("Failed to copy PSYC2001_Assignment.Rproj")
+}
+
+# Create zip file with the directory structure
+current_wd <- getwd()
+setwd(zip_base)
+zip_result <- zip(file, files = list.files(".", recursive = TRUE, include.dirs = TRUE, all.files = TRUE), flags = "-r")
+setwd(current_wd)
+
+if (zip_result != 0) {
+  stop("Failed to create zip file")
+}
+```
+
+**After:**
+```r
+# 1) Write the .Rproj file using the helper function
+write_rproj(build_dir, project_name = "PSYC2001_Assignment")
+
+# 5) Zip the directory contents into `file`
+# Use zip::zipr for portability (works on Windows/macOS/Linux)
+old_wd <- setwd(build_dir)
+on.exit(setwd(old_wd), add = TRUE)
+
+# Zip everything inside build_dir (relative paths)
+zip::zipr(
+  zipfile = file,
+  files   = list.files(".", all.files = TRUE, recursive = TRUE, include.dirs = TRUE)
+)
+```
+
+### Impact
+- **No change to student downloads**: Students still receive the same `PSYC2001_Assignment.Rproj` file
+- **Improved settings**: The new `.Rproj` file uses modern R best practices (no workspace saving/restoring)
+- **Better maintainability**: `.Rproj` configuration is now in code rather than a separate static file
+- **Cross-platform compatibility**: Using `zip::zipr()` ensures reliable zip creation on all platforms
+
+### Technical Details
+
+#### .Rproj Settings Changes
+The dynamically generated `.Rproj` file uses improved settings compared to the static file:
+
+**Old Settings (static file):**
+```
+RestoreWorkspace: Default
+SaveWorkspace: Default
+AlwaysSaveHistory: Default
+```
+
+**New Settings (dynamic generation):**
+```
+RestoreWorkspace: No
+SaveWorkspace: No
+AlwaysSaveHistory: No
+```
+
+**Rationale:** Modern R best practices recommend not saving/restoring workspace for reproducibility. This aligns with tidyverse style guide recommendations.
+
+#### zip Package
+Added dependency on the `zip` package for cross-platform zip file creation:
+- More reliable than base R's `zip()` function
+- Works consistently across Windows, macOS, and Linux
+- No external zip utilities required
+
+### Benefits
+
+#### For Maintainers
+1. **Single source of truth**: `.Rproj` configuration is in code, not a separate file
+2. **Version control friendly**: Changes to settings show up in code diffs
+3. **Easier to modify**: Update settings in one place (the function)
+4. **Follows industry patterns**: Same approach used by packages like `usethis`
+
+#### For Students
+1. **Best practices**: Encourages reproducible workflows with no workspace saving
+2. **Clean environment**: Each session starts fresh
+3. **Same user experience**: Still double-click `.Rproj` to open project in RStudio
+
+### Dependencies
+- **New requirement**: The `zip` package must be installed
+- Installation: `install.packages("zip")`
+
+### Testing
+Since R is not available in the CI/CD environment, the implementation has been:
+1. ✅ Code reviewed for syntax correctness
+2. ✅ Compared with working example from the issue
+3. ✅ Documented thoroughly for manual testing
+
+**Manual testing instructions:**
+1. Run the Shiny app locally with R and required packages
+2. Download a student dataset
+3. Extract and verify `PSYC2001_Assignment.Rproj` exists with correct settings
+4. Open the project in RStudio to confirm functionality
+
+### Documentation
+Created `DYNAMIC_RPROJ_IMPLEMENTATION.md` with comprehensive documentation including:
+- Implementation details
+- Comparison with previous approach
+- Benefits and rationale
+- Testing recommendations
+- Troubleshooting guide
+
+### Errors Encountered
+No errors were encountered during implementation. The example code from the issue provided a clear, working template to follow.
+
+---
+
 ## 2026-01-20: Remove .gitkeep from Output Folder
 
 ### Summary
