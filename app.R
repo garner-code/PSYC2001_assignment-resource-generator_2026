@@ -113,9 +113,9 @@ server <- function(input, output) {
         stop("Failed to copy README.txt")
       }
       
-      # 5) Add a README to Output folder to ensure it's included in the zip
+      # 5) Add a README to the main folder to ensure it's included in the zip
       output_readme <- file.path(output_dir, "README.txt")
-      writeLines("This folder is for your analysis outputs (plots, tables, etc.)", output_readme)
+      writeLines("This folder is for your analysis outputs (e.g. plots)", output_readme)
       
       # 6) Zip the directory contents into `file`
       # Use zip::zipr for portability (works on Windows/macOS/Linux)
@@ -127,7 +127,13 @@ server <- function(input, output) {
       # (zip::zipr handles directories automatically when given file paths)
       zip::zipr(
         zipfile = file,
-        files   = list.files(".", all.files = TRUE, recursive = TRUE, include.dirs = FALSE)
+ #       files   = list.files(".", all.files = TRUE, include.dirs = TRUE)
+      files = c(
+        "PSYC2001_Assignment.Rproj",
+        "analysis.R",
+        "README.txt",
+        "Data/",
+        "Output/")
       )
     }
   )
