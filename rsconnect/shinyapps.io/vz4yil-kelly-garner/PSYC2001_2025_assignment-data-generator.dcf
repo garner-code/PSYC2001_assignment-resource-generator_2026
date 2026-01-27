@@ -5,7 +5,7 @@ account: vz4yil-kelly-garner
 server: shinyapps.io
 hostUrl: https://api.shinyapps.io/v1
 appId: 14255806
-bundleId: 9950646
+bundleId: 11498878
 url: https://unsw-psych.shinyapps.io/PSYC2001_2025_assignment-data-generator/
 version: 1
 asMultiple: FALSE

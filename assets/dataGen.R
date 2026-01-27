@@ -18,7 +18,7 @@ dataGen <- function(zID) {
   library(scales)
   g1_v1 <- scales::rescale(g1_v1, to=c(0.2,0.9))
   # now make a second group for v1
-  g2_mu <- 0.85
+  g2_mu <- 0.75
   g2_v1 <- rnorm(subN/n_grps, g2_mu, v1_sd)
   g2_v1 <- scales::rescale(g2_v1, to=c(0.25,0.95))
   
@@ -30,7 +30,7 @@ dataGen <- function(zID) {
 
   # now make a second variable that has a negative correlation
   # with the first
-  v2 <- (v1 - 0.15) + rnorm(subN, mean=0, sd=v1_sd*2)
+  v2 <- (v1 - 0.1) + rnorm(subN, mean=0, sd=v1_sd)
   v2 <- scales::rescale(v2, to=c(0.1,0.9))
   
   total_v1_noise <- rnorm(subN*N_mult, 0, 0.01) # get a tiny bit of noise
