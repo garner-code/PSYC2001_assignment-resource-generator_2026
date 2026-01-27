@@ -1,5 +1,6 @@
 library(shiny)
 source("assets/dataGen.R")
+source("assets/create_proj.R")
 
 # Define UI for data download app ----
 ui <- fluidPage(
@@ -53,9 +54,15 @@ server <- function(input, output) {
       paste(input$zID, ".zip", sep = "")
     },
     content = function(file) {
-      # Create a temporary directory to store files before zipping
-      temp_dir <- tempdir()
-      zip_base <- file.path(temp_dir, paste0("zip_", input$zID))
+      
+      # Create a temp build directory
+      build_dir <- tempfile("bundle_")
+      dir.create(build_dir)
+      dir.create(file.path(build_dir, "Data"))
+      dir.create(file.path(build_dir, "Output"))
+      
+      # 1) Write the .Rproj
+      write_rproj(build_dir, project_name = input$zID %||% input$zID)
       
       # Create the directory structure
       dir.create(zip_base, showWarnings = FALSE, recursive = TRUE)
@@ -67,8 +74,9 @@ server <- function(input, output) {
       # Define file paths
       csv_file <- file.path(data_dir, "data.csv")
       r_script <- file.path(zip_base, "analysis.R")
-      r_project <- file.path(zip_base, "PSYC2001_Assignment.Rproj")
       readme_file <- file.path(zip_base, "README.txt")
+      # R project file
+      
       
       # Write the CSV file to Data folder
       write.csv(dat(), csv_file, row.names = FALSE)
