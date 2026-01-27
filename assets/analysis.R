@@ -39,8 +39,13 @@ paired_t_test_result
 
 ###############################################################################
 # 
-t_test_v1_between <- t.test(v1 ~ group, data = dat)
-t_test_v1_between
+independent_t_test_v1_group <- t.test(v1 ~ group, data = dat)
+independent_t_test_v1_group
+
+###############################################################################
+# 
+one_sample_t_test_v1 <- t.test(dat$v1, mu = 0)
+one_sample_t_test_v1
 
 ###############################################################################
 # 
@@ -73,10 +78,9 @@ dat %>%
 ###############################################################################
 # 
 dat %>%
-  ggplot(aes(x = group, y = v2, fill = group)) +
-  geom_boxplot() +
-  labs(x = "Group", y = "v2 values") +
-  scale_fill_manual(values = c("Group 1" = "lightgreen", "Group 2" = "lightyellow")) +
+  ggplot(aes(x = "", y = v1)) +
+  geom_boxplot(fill = "lightblue", col = "black") +
+  labs(x = "", y = "v1 values") +
   theme_classic()
 
 ###############################################################################
