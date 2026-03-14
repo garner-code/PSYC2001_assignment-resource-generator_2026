@@ -35,7 +35,7 @@ write_rproj <- function(path, project_name = NULL, overwrite = FALSE) {
 ui <- fluidPage(
   
   # App title ----
-  titlePanel("PSYC2001 Assignment Data Generator 2025"),
+  titlePanel("PSYC2001 Assignment Data Generator 2026"),
   
   # Sidebar layout with input and output definitions ----
   sidebarLayout(
