@@ -27,7 +27,7 @@ The code you need to perform your chosen analysis includes all the steps you wou
 Note that good answers will copy *only* the required code to perform the steps of the analysis that has been chosen. Excellent answers will show cogent commenting of the code and will customise visualisations to have the information related to your specific study (e.g. axis labels).
 
 Some basic figures have been generated for you. Good answers will use these. Excellent answers will have appropriate axis labels and customisations. Customisations are of your choice but should be appropriate to the analysis and study design. 
-You should save any extra figures that you generate, including the one that you put in your report, in the Output folder.
+You should save any customised figures that you generate, including the one that you put in your report, in the Output folder.
 
 You may relabel the columns in your data frame so that they better match your proposed variables, if you like. However, this is not necessary to complete the assignment.
 
